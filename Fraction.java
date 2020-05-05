@@ -22,12 +22,12 @@ public class Fraction
 
     public Fraction(int num)
     {
-        return this(num, 1);
+        this(num, 1);
     }
 
     public Fraction()
     {
-        return this(0, 1);
+        this(0, 1);
     }
 
     public int getNumerator()
@@ -56,24 +56,24 @@ public class Fraction
 
     public Fraction add(Fraction other)
     {
-        int denom = denominator * other.getDenominator();
         int num = (numerator * other.getDenominator()) + (other.getNumerator() * denominator);
-        return this(num, denom);
+        int denom = denominator * other.getDenominator();
+        return new Fraction(num, denom);
     }
 
     public Fraction subtract(Fraction other)
     {
-        return this.add(this, other.multiply(-1));
+        return add(other.multiply(-1));
     }
 
     public Fraction multiply(int scale)
     {
-        return this(numerator * scale, denominator);
+        return new Fraction(numerator * scale, denominator);
     }
 
     public Fraction multiply(Fraction other)
     {
-        return this(numerator * other.getNumerator(), denominator * other.getDenominator());
+        return new Fraction(numerator * other.getNumerator(), denominator * other.getDenominator());
     }
 
     public Fraction divide(int scale)
@@ -82,23 +82,34 @@ public class Fraction
         {
             throw new IllegalArgumentException("/ by 0");
         }
-        return this(numerator, denominator * scale);
+        return new Fraction(numerator, denominator * scale);
+    }
+
+    public Fraction divide(Fraction other)
+    {
+        return new Fraction(numerator * other.getDenominator(), denominator * other.getNumerator());
     }
 
     public void toLowestTerms()
     {
-        return this.divide(Fraction.gcd(numerator, denominator));
+        int gcd = Fraction.gcd(numerator, denominator);
+        numerator /= gcd;
+        denominator /= gcd;
     }
 
-    public boolean equals(Fraction other)
+    public boolean equals(Object other)
     {
-        return this.numerator == other.getNumerator() && this.denominator == other.getDenominator();
+        if (other instanceof Fraction)
+        {
+            Fraction otherFraction = (Fraction) other;
+            return this.numerator == otherFraction.getNumerator() && this.denominator == otherFraction.getDenominator();
+        }
+        return false;
     }
 
-    public static gcd(int num, int den)
+    public static int gcd(int num, int den)
     {
         num = Math.abs(num);
-        den = Math.abs(den);
 
         int n = 1;
         for (int i = 1; i <= Math.min(num, den); i++)
